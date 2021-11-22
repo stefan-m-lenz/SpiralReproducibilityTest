@@ -136,7 +136,11 @@ function latent_mu_logsd(model, x::SpiralSample)
          write(io, "rnnmodelweight1" * string(model.rnn[1].cell.Wi) * "\n")
          write(io, "rnnmodelweight1" * string(model.rnn[1].cell.Wh) * "\n")
          write(io, "rnnmodelb" * string(model.rnn[1].cell.b) * "\n")
-         write(io, "rnnmodelstate" * string(model.rnn[1].state) * "\n")
+         write(io, "rnnmodelstate\n")
+         states = map(string, model.rnn[1].state)
+         for s in states
+            write(io, s * "\n")
+         end
          write(io, "rnnmodelstate0" * string(model.rnn[1].cell.state0) * "\n")
          write(io, "rnnmodelweight2" * string(model.rnn[2].weight) * "\n")
          write(io, "mu " * string(μ) * "\n")
