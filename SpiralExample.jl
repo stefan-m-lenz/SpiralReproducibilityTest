@@ -112,7 +112,16 @@ function n_ode(model, z0, t)
     tspan = (t[1], t[end])
     latent_dynamics(u, latentODEparams, t) = model.latentODEfunc(latentODEparams)(u)
     latentODEprob = ODEProblem(latent_dynamics, z0, tspan)
-    Array(solve(latentODEprob, Tsit5(), u0=z0, p=model.latentODEparams, saveat=t))
+
+    ret = Array(solve(latentODEprob, Tsit5(), u0=z0, p=model.latentODEparams, saveat=t))
+    Zygote.ignore() do
+      open("n_ode.txt", "a") do io
+         write(io, "t" * string(t) * "\n")
+         write(io, "z0" * string(z0) * "\n")
+         write(io, "ret" * string(ret) * "\n\n")
+      end
+    end
+    ret
 end
 
 function latent_mu_logsd(model, x::SpiralSample)
