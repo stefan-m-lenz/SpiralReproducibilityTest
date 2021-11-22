@@ -126,7 +126,9 @@ end
 
 function latent_mu_logsd(model, x::SpiralSample)
     latent_dim = nhiddennodes(model.latentODEfunc.m)
+    statebefore = deepcopy(model.rnn[1].state)
     [model.rnn(xi) for xi in reverse(x, dims=1)[1:(end-1)]]
+    stateafter1 = deepcopy(model.rnn[1].state)
     rnn_encoded = model.rnn(reverse(x, dims=1)[end])
     μ = rnn_encoded[1:latent_dim]
     logσ = rnn_encoded[(latent_dim+1):end]
@@ -136,6 +138,16 @@ function latent_mu_logsd(model, x::SpiralSample)
          write(io, "rnnmodelweight1" * string(model.rnn[1].cell.Wi) * "\n")
          write(io, "rnnmodelweight1" * string(model.rnn[1].cell.Wh) * "\n")
          write(io, "rnnmodelb" * string(model.rnn[1].cell.b) * "\n")
+         write(io, "rnnmodelstatebefore\n")
+         states = map(string, statebefore)
+         for s in states
+            write(io, s * "\n")
+         end
+         write(io, "rnnmodelstateafter1\n")
+         states = map(string, stateafter1)
+         for s in states
+            write(io, s * "\n")
+         end
          write(io, "rnnmodelstate\n")
          states = map(string, model.rnn[1].state)
          for s in states
