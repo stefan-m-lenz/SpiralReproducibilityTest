@@ -130,6 +130,13 @@ function latent_mu_logsd(model, x::SpiralSample)
     rnn_encoded = model.rnn(reverse(x, dims=1)[end])
     μ = rnn_encoded[1:latent_dim]
     logσ = rnn_encoded[(latent_dim+1):end]
+    Zygote.ignore() do
+      open("latent_mu_logsd.txt", "a") do io
+         write(io, "x " * string(x) * "\n")
+         write(io, "mu " * string(μ) * "\n")
+         write(io, "logsd " * string(logσ) * "\n")
+      end
+   end
     μ, logσ
 end
 
