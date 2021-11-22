@@ -133,6 +133,9 @@ function latent_mu_logsd(model, x::SpiralSample)
     Zygote.ignore() do
       open("latent_mu_logsd.txt", "a") do io
          write(io, "x " * string(x) * "\n")
+         write(io, "rnnmodelweight1" * string(model.rnn[1].cell.Wi) * "\n")
+         write(io, "rnnmodelweight1" * string(model.rnn[1].cell.Wh) * "\n")
+         write(io, "rnnmodelweight2" * string(model.rnn[2].weight) * "\n")
          write(io, "mu " * string(μ) * "\n")
          write(io, "logsd " * string(logσ) * "\n")
       end
