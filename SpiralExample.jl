@@ -6,6 +6,7 @@ using DiffEqFlux
 using OrdinaryDiffEq
 using Random
 using Distributions
+using Zygote
 
 const noise_std = 0.1 # standard deviation of random noise added to samples
 const noise_logvar = 2*log(noise_std)
@@ -127,12 +128,31 @@ end
 # p(x,z)
 function log_normal_pdf(x,mean,logvar)
     constant = log(2*pi)
-    -0.5*(constant .+ logvar .+ ((x.-mean).^2 ./ exp.(logvar)))
+    ret = -0.5*(constant .+ logvar .+ ((x.-mean).^2 ./ exp.(logvar)))
+    Zygote.ignore() do
+      open("log_normal_pdf.txt", "a") do io
+         write(io, "x " * string(x) * "\n")
+         write(io, "mean " *  string(mean) * "\n")
+         write(io, "logvar " *  string(logvar) * "\n")
+         write(io, "ret " *  string(ret) * "\n\n")
+      end
+    end
+    ret
 end
 
 
 # Kullback-Leibler-divergence
-kl_q_p(μ, logσ) = 0.5 * sum(exp.(2 .* logσ) + μ.^2 .- 1 .- (2 .* logσ))
+function kl_q_p(μ, logσ)
+   ret = 0.5 * sum(exp.(2 .* logσ) + μ.^2 .- 1 .- (2 .* logσ))
+   Zygote.ignore() do
+      open("kl_q_p.txt", "a") do io
+         write(io, "mu " * string(μ) * "\n")
+         write(io, "logσ " *  string(logσ) * "\n")
+         write(io, "ret " *  string(ret) * "\n\n")
+      end
+   end
+   ret
+end
 
 nhiddennodes(d::Dense) = size(d.W, 1)
 nhiddennodes(c::Chain) = nhiddennodes(c.layers[end])

@@ -21,4 +21,4 @@ function printmonitoring(epoch, loss)
 end
 
 SpiralExample.train!(model, spiraldata.samp_trajs, spiraldata.samp_ts,
-      epochs = 5, learningrate = 0.01, monitoring = printmonitoring)
+      epochs = 2, learningrate = 0.01, monitoring = printmonitoring)
